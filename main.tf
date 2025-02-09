@@ -14,5 +14,6 @@ module "instance" {
   source        = "./instance"
   instance_type = var.instance_type
   ami_id        = var.ami_id
-  subnet_id     = module.vpc.subnet_id  # Reference VPC Module Output
+  subnet_id     = module.vpc.subnet_id  
+  
 }
