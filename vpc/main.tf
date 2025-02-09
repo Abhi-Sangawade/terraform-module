@@ -1,5 +1,5 @@
 module "vpc" {
-  source      = "vpc"
+  source      = "./vpc"
   vpc_cidr    = var.vpc_cidr
   subnet_cidr = var.subnet_cidr
 }
@@ -8,9 +8,9 @@ module "instance" {
   source        = "./instance"
   instance_type = var.instance_type
   ami_id        = var.ami_id
-  vpc_cidr      = var.vpc_cidr       # Pass vpc_cidr
-  subnet_cidr   = var.subnet_cidr    # Pass subnet_cidr
-  subnet_id     = module.vpc.subnet_id  # Reference the output from the VPC module
+  vpc_cidr      = var.vpc_cidr       
+  subnet_cidr   = var.subnet_cidr    
+  subnet_id     = module.vpc.subnet_id  
 }
 
 resource "aws_vpc" "main" {
@@ -39,7 +39,7 @@ resource "aws_security_group" "http_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Allow traffic from anywhere
+    cidr_blocks = ["0.0.0.0/0"] 
   }
 
   egress {
