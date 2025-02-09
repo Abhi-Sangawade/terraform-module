@@ -1,4 +1,4 @@
-# variables.tf (root module)
+
 
 variable "vpc_cidr" {
   description = "The CIDR block for the VPC"
@@ -15,6 +15,7 @@ variable "subnet_cidr" {
 variable "ami_id" {
   description = "AMI ID for the EC2 instance"
   type        = string
+  default     = "ami-01816d07b1128cd2d"
 }
 
 variable "instance_type" {
