@@ -38,7 +38,3 @@ resource "aws_security_group" "http_sg" {
   }
 }
 
-# Output the security group ID
-output "http_security_group_id" {
-  value = aws_security_group.http_sg.id
-}
