@@ -3,6 +3,7 @@
 variable "ami_id" {
   description = "AMI ID for EC2 instance"
   type        = string
+  default     = "ami-01816d07b1128cd2d"
 }
 
 variable "instance_type" {
