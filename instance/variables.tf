@@ -1,19 +1,22 @@
-variable "vpc_cidr" {
-  description = "CIDR block for the VPC"
-  type        = string
-}
+# instance/variables.tf
 
-variable "subnet_cidr" {
-  description = "CIDR block for the subnet"
+variable "ami_id" {
+  description = "AMI ID for EC2 instance"
   type        = string
 }
 
 variable "instance_type" {
-  description = "Type of EC2 instance"
+  description = "EC2 instance type"
+  type        = string
+  default     = "t2.micro"
+}
+
+variable "subnet_id" {
+  description = "The ID of the subnet in which to launch the instance"
   type        = string
 }
 
-variable "ami_id" {
-  description = "AMI ID for EC2 instance"
+variable "security_group_id" {
+  description = "The security group ID to attach to the instance"
   type        = string
 }

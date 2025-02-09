@@ -1,11 +1,16 @@
+# vpc/outputs.tf
+
 output "vpc_id" {
-  value = aws_vpc.main.id
+  description = "ID of the VPC"
+  value       = aws_vpc.main.id
 }
 
 output "subnet_id" {
-  value = aws_subnet.main.id
+  description = "ID of the subnet"
+  value       = aws_subnet.main.id
 }
 
-output "http_security_group_id" {
-  value = aws_security_group.http_sg.id
+output "http_sg_id" {
+  description = "ID of the HTTP security group"
+  value       = aws_security_group.http_sg.id
 }

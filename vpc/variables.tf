@@ -1,15 +1,13 @@
+# vpc/variables.tf
+
 variable "vpc_cidr" {
-  description = "VPC CIDR block"
+  description = "CIDR block for the VPC"
   type        = string
+  default     = "10.0.0.0/16"
 }
-
-variable "vpc_id" {
-  description = "VPC ID"
-  type        = string
-}
-
 
 variable "subnet_cidr" {
-  description = "Subnet CIDR block"
+  description = "CIDR block for the subnet"
   type        = string
+  default     = "10.0.1.0/24"
 }

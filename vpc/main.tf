@@ -1,22 +1,12 @@
-module "vpc" {
-  source      = "./vpc"
-  vpc_cidr    = var.vpc_cidr
-  subnet_cidr = var.subnet_cidr
-}
-
-module "instance" {
-  source        = "./instance"
-  instance_type = var.instance_type
-  ami_id        = var.ami_id
-  vpc_cidr      = var.vpc_cidr       
-  subnet_cidr   = var.subnet_cidr    
-  subnet_id     = module.vpc.subnet_id  
-}
+# vpc/main.tf
 
 resource "aws_vpc" "main" {
   cidr_block = var.vpc_cidr
+  enable_dns_support = true
+  enable_dns_hostnames = true
+
   tags = {
-    Name = "main-vpc"
+    Name = "MainVPC"
   }
 }
 
@@ -25,21 +15,22 @@ resource "aws_subnet" "main" {
   cidr_block              = var.subnet_cidr
   availability_zone       = "us-west-2a"
   map_public_ip_on_launch = true
+
   tags = {
-    Name = "main-subnet"
+    Name = "MainSubnet"
   }
 }
 
 resource "aws_security_group" "http_sg" {
   name        = "http-security-group"
   description = "Allow HTTP inbound traffic"
-  vpc_id      = var.vpc_id
+  vpc_id      = aws_vpc.main.id
 
   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] 
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -50,3 +41,14 @@ resource "aws_security_group" "http_sg" {
   }
 }
 
+output "vpc_id" {
+  value = aws_vpc.main.id
+}
+
+output "subnet_id" {
+  value = aws_subnet.main.id
+}
+
+output "http_sg_id" {
+  value = aws_security_group.http_sg.id
+}
