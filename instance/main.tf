@@ -3,11 +3,12 @@ resource "aws_instance" "web" {
   instance_type = var.instance_type
   subnet_id     = var.subnet_id
   security_groups = [var.security_group_id]
+
+    associate_public_ip_address = true
   
   tags = {
-    Name = "WebServer"
+    Name = "MyTerraform"
   }
   
-
 }
 

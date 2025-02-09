@@ -9,7 +9,6 @@ variable "instance_type" {
   type        = string
   default     = "t2.micro"
 }
-
 variable "vpc_cidr" {
   description = "The CIDR block for the VPC"
   type        = string
