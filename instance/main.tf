@@ -8,10 +8,5 @@ resource "aws_instance" "web" {
     Name = "WebServer"
   }
 
-  user_data = <<-EOF
-              #!/bin/bash
-              echo "Hello, World!" > /var/www/html/index.html
-              sudo service httpd start
-              EOF
 }
 
