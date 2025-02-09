@@ -17,6 +17,3 @@ resource "aws_instance" "web" {
               EOF
 }
 
-output "instance_id" {
-  value = aws_instance.web.id
-}
