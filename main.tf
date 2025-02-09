@@ -1,4 +1,3 @@
-# main.tf (root module)
 
 provider "aws" {
   region = "us-west-2"
