@@ -1,11 +1,8 @@
-resource "aws_vpc" "main" {
-  cidr_block = var.vpc_cidr
-}
-
+# Define security group in vpc module
 resource "aws_security_group" "http_sg" {
   name        = "http-security-group"
   description = "Allow HTTP inbound traffic"
-  
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port   = 80
@@ -22,9 +19,7 @@ resource "aws_security_group" "http_sg" {
   }
 }
 
-
-resource "aws_subnet" "main" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = var.subnet_cidr
-  map_public_ip_on_launch = true
+# Output the security group ID
+output "http_security_group_id" {
+  value = aws_security_group.http_sg.id
 }
