@@ -1,20 +1,19 @@
-variable "instance_type" {
-  description = "EC2 instance type"
+variable "vpc_cidr" {
+  description = "CIDR block for the VPC"
   type        = string
-  default     = "t2.micro"
+}
+
+variable "subnet_cidr" {
+  description = "CIDR block for the subnet"
+  type        = string
+}
+
+variable "instance_type" {
+  description = "Type of EC2 instance"
+  type        = string
 }
 
 variable "ami_id" {
-  description = "AMI ID for EC2"
-  type        = string
-  default = "ami-01816d07b1128cd2d"
-}
-variable "key_name" {
-  description = "EC2 key pair name"
-  type        = string
-  default     = "terraform"
-}
-variable "subnet_id" {
-  description = "Subnet ID"
+  description = "AMI ID for EC2 instance"
   type        = string
 }
