@@ -11,8 +11,6 @@ variable "aws_region" {
 # Create an S3 bucket
 resource "aws_s3_bucket" "static_website" {
   bucket = "trfm-bucket-15243"  # Replace with a unique name
-
-  acl = "public-read"  # Allow public read access to the bucket
 }
 
 # Disable block public access for the S3 bucket
