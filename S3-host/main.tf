@@ -1,48 +1,43 @@
-variable "aws_region" {
-  description = "The AWS region where resources will be created."
-  default     = "ap-south-1" # You can modify this region if needed
+provider "aws" {
+  region = "ap-south-1" # Or your region
 }
-# ... (variable definitions and provider block)
+
+variable "aws_region" {
+  description = "AWS region"
+  default     = "ap-south-1"
+}
+
+variable "index_html_path" {
+  type = string
+  description = "Path to the index.html file"
+}
 
 resource "aws_s3_bucket" "static_website" {
-  bucket = "trfm-bucket-15243" # Use a unique bucket name
+  bucket = "your-unique-bucket-name" # Replace with a unique name
 }
 
 resource "aws_s3_bucket_public_access_block" "static_website_access" {
   bucket = aws_s3_bucket.static_website.bucket
-  block_public_acls       = false
+
+  block_public_acls       = false # Required for ACLs to work
   block_public_policy     = false
   ignore_public_acls      = false
   restrict_public_buckets = false
 }
 
-resource "aws_s3_bucket_policy" "static_website_policy" {
+resource "aws_s3_bucket_acl" "static_website_acl" {
   bucket = aws_s3_bucket.static_website.bucket
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid    = "PublicReadGetObject"
-        Effect = "Allow"
-        Principal = "*"
-        Action   = [
-          "s3:GetObject"
-        ]
-        Resource = [
-          aws_s3_bucket.static_website.arn,
-          "${aws_s3_bucket.static_website.arn}/*"
-        ]
-      }
-    ]
-  })
+  acl    = "public-read" # Often not necessary, object ACLs are what matters
 }
 
 
 resource "aws_s3_bucket_website_configuration" "static_website" {
   bucket = aws_s3_bucket.static_website.bucket
+
   index_document {
     suffix = "index.html"
   }
+
   error_document {
     key = "error.html" # Optional
   }
@@ -51,8 +46,9 @@ resource "aws_s3_bucket_website_configuration" "static_website" {
 resource "aws_s3_object" "website_index" {
   bucket = aws_s3_bucket.static_website.bucket
   key    = "index.html"
-  source = "index.html"
-  acl    = "public-read" # Optional, but good practice
+  source = var.index_html_path # Use the variable for the path
+  acl    = "public-read"
+  content_type = "text/html"
 }
 
 output "website_url" {
