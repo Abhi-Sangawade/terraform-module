@@ -15,7 +15,7 @@ resource "aws_s3_bucket" "static_website" {
 
 # Disable block public access for the S3 bucket
 resource "aws_s3_bucket_public_access_block" "static_website_access" {
-  bucket = aws_s3_bucket.static_website.bucket
+  bucket = aws_s3_bucket.static_website.id
 
   block_public_acls   = false
   block_public_policy = false
@@ -23,7 +23,7 @@ resource "aws_s3_bucket_public_access_block" "static_website_access" {
 
 # Configure the S3 bucket as a static website
 resource "aws_s3_bucket_website_configuration" "static_website" {
-  bucket = aws_s3_bucket.static_website.bucket
+  bucket = aws_s3_bucket.static_website.id
 
   index_document {
     suffix = "index.html"
@@ -37,7 +37,7 @@ resource "aws_s3_bucket_website_configuration" "static_website" {
 
 # Upload the website files (index.html in this case)
 resource "aws_s3_object" "website_index" {
-  bucket = aws_s3_bucket.static_website.bucket
+  bucket = aws_s3_bucket.static_website.id
   key    = "index.html"
   source = "index.html"  # Replace with your local file path
   acl    = "public-read"  # Allow public access to the file
@@ -45,7 +45,7 @@ resource "aws_s3_object" "website_index" {
 
 # Set the bucket ACL using a separate resource
 resource "aws_s3_bucket_acl" "static_website_acl" {
-  bucket = aws_s3_bucket.static_website.bucket
+  bucket = aws_s3_bucket.static_website.id
   acl    = "public-read"  # Set the bucket ACL to public-read
 }
 
