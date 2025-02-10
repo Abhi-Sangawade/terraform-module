@@ -1,7 +1,7 @@
-provider "aws" {
-  region = "ap-south-1"  # Change region if needed
+variable "aws_region" {
+  description = "The AWS region where resources will be created."
+  default     = "ap-south-1" # You can modify this region if needed
 }
-
 # ... (variable definitions and provider block)
 
 resource "aws_s3_bucket" "static_website" {
