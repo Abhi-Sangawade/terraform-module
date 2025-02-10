@@ -10,26 +10,43 @@ variable "aws_region" {
 variable "index_html_path" {
   type = string
   description = "Path to the index.html file"
-  default = "index.html" 
+  default = "index.html"
 }
 
 resource "aws_s3_bucket" "static_website" {
-  bucket = "bucket-trfm-1" 
+  bucket = "bucket-trfm-1" # Or a unique name
 }
 
 resource "aws_s3_bucket_public_access_block" "static_website_access" {
   bucket = aws_s3_bucket.static_website.bucket
 
-  block_public_acls       = false  # All four MUST be false for ACLs
-  block_public_policy     = false
+  block_public_acls       = false # Important, but not strictly required for bucket policy
+  block_public_policy     = false # Important, but not strictly required for bucket policy
   ignore_public_acls      = false
   restrict_public_buckets = false
 }
 
-resource "aws_s3_bucket_acl" "static_website_acl" {
+resource "aws_s3_bucket_policy" "static_website_policy" {
   bucket = aws_s3_bucket.static_website.bucket
-  acl    = "public-read" # Often not strictly necessary
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "PublicReadGetObject"
+        Effect = "Allow"
+        Principal = "*" # Allow everyone to read
+        Action   = [
+          "s3:GetObject"
+        ]
+        Resource = [
+          aws_s3_bucket.static_website.arn,
+          "${aws_s3_bucket.static_website.arn}/*" # Important: Include objects
+        ]
+      }
+    ]
+  })
 }
+
 
 resource "aws_s3_bucket_website_configuration" "static_website" {
   bucket = aws_s3_bucket.static_website.bucket
@@ -47,8 +64,7 @@ resource "aws_s3_object" "website_index" {
   bucket = aws_s3_bucket.static_website.bucket
   key    = "index.html"
   source = var.index_html_path
-  acl    = "public-read"
-  content_type = "text/html"
+  content_type = "text/html" # Important: Set content type
 }
 
 output "website_url" {
