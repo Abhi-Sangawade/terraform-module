@@ -87,8 +87,10 @@ resource "aws_s3_object" "website_assets" {
     "jpeg" : "image/jpeg",
     "gif" : "image/gif",
     "svg" : "image/svg+xml",
-    "ico" : "image/x-icon"
-  }, regex("\\.([a-z]+)$", each.key)[0], "application/octet-stream")
+    "ico" : "image/x-icon",
+    "woff": "font/woff",
+    "woff2": "font/woff2" # Add woff2 and woff
+  }, lower(regex("\\.([a-zA-Z0-9-]+)$", each.key)[1]), "application/octet-stream")
 
   depends_on = [
     aws_s3_bucket_ownership_controls.ownership_controls
