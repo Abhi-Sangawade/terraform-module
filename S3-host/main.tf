@@ -71,26 +71,30 @@ resource "aws_s3_object" "website_index" {
 }
 
 resource "aws_s3_object" "website_assets" {
-  for_each = fileset(var.assets_path, "**/*") # Use fileset to get all files
+  for_each = fileset(var.assets_path, "**/*")
 
   bucket = aws_s3_bucket.static_website.bucket
-  key    = each.key # Path within the assets folder
-  source = "${var.assets_path}/${each.key}" # Full path to the file
+  key    = each.key
+  source = "${var.assets_path}/${each.key}"
   acl    = "public-read"
 
-  content_type = lookup({
-    "css" : "text/css",
-    "js" : "application/javascript",
-    "html" : "text/html",
-    "png" : "image/png",
-    "jpg" : "image/jpeg",
-    "jpeg" : "image/jpeg",
-    "gif" : "image/gif",
-    "svg" : "image/svg+xml",
-    "ico" : "image/x-icon",
-    "woff": "font/woff",
-    "woff2": "font/woff2" # Add woff2 and woff
-  }, lower(regex("\\.([a-zA-Z0-9-]+)$", each.key)[1]), "application/octet-stream")
+  content_type = (
+    can(regex("\\.([a-zA-Z0-9-]+)$", each.key)[1]) ? (
+      lookup({
+        "css" : "text/css",
+        "js" : "application/javascript",
+        "html" : "text/html",
+        "png" : "image/png",
+        "jpg" : "image/jpeg",
+        "jpeg" : "image/jpeg",
+        "gif" : "image/gif",
+        "svg" : "image/svg+xml",
+        "ico" : "image/x-icon",
+        "woff": "font/woff",
+        "woff2": "font/woff2"
+      }, lower(regex("\\.([a-zA-Z0-9-]+)$", each.key)[1]), "application/octet-stream")
+    ) : "application/octet-stream"
+  )
 
   depends_on = [
     aws_s3_bucket_ownership_controls.ownership_controls
