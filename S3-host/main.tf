@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "static_website" {
-  bucket = "your-unique-bucket-name"
+  bucket = "trfm-bucket"
 }
 
 resource "aws_s3_bucket_website_configuration" "static_website_config" {
@@ -12,10 +12,6 @@ resource "aws_s3_bucket_website_configuration" "static_website_config" {
   index_document {
     suffix = "index.html"
   }
-
-  # optional: error_document {
-  #   key = "error.html"
-  # }
 }
 
 resource "null_resource" "download_and_unzip" {
@@ -40,6 +36,6 @@ resource "aws_s3_object" "static_files" {
   acl    = "public-read"
 }
 output "website_url" {
-  value = "http://${aws_s3_bucket.static_website.bucket}.s3-website-us-east-1.amazonaws.com"  # Replace with your desired region
+  value = "http://${aws_s3_bucket.static_website.bucket}.s3-website-us-east-1.amazonaws.com" 
 }
 
