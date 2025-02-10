@@ -12,12 +12,15 @@ variable "aws_region" {
 resource "aws_s3_bucket" "static_website" {
   bucket = "trfm-bucket-15243"  # Replace with a unique name
 
-  # Disable block public access to allow public access to the bucket
-  block_public_access {
-    block_public_acls = false
-    block_public_policy = false
-  }
-  acl = "public-read"
+  acl = "public-read"  # Allow public read access to the bucket
+}
+
+# Disable block public access for the S3 bucket
+resource "aws_s3_bucket_public_access_block" "static_website_access" {
+  bucket = aws_s3_bucket.static_website.bucket
+
+  block_public_acls = false
+  block_public_policy = false
 }
 
 # Configure the S3 bucket as a static website
