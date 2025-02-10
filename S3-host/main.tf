@@ -11,9 +11,12 @@ variable "aws_region" {
 # Create an S3 bucket
 resource "aws_s3_bucket" "static_website" {
   bucket = "trfm-bucket-15243"  # Use a unique bucket name
+}
 
-  # Set Object Ownership to bucket-owner enforced to allow for proper public access
-  object_ownership = "BucketOwnerEnforced"
+# Set the Bucket's ACL to allow public-read access
+resource "aws_s3_bucket_acl" "static_website_acl" {
+  bucket = aws_s3_bucket.static_website.bucket
+  acl    = "public-read"  # Ensure the bucket is publicly readable
 }
 
 # Disable block public access for the S3 bucket (enabling public access for the website)
@@ -46,13 +49,6 @@ resource "aws_s3_object" "website_index" {
   acl    = "public-read"  # Ensure the file is publicly accessible
 }
 
-# Upload other static website files with public-read ACL (optional)
-resource "aws_s3_object" "website_error" {
-  bucket = aws_s3_bucket.static_website.bucket
-  key    = "error.html"
-  source = "error.html"  # Replace with your local error file path
-  acl    = "public-read"  # Ensure the error file is publicly accessible
-}
 
 # Output the URL of the static website
 output "website_url" {
