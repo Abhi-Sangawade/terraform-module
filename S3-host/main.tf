@@ -17,36 +17,30 @@ resource "aws_s3_bucket" "static_website" {
   bucket = "bucket-trfm-1" # Or a unique name
 }
 
+# Object Ownership: CRITICAL for ACLs to work when other accounts own objects
+resource "aws_s3_bucket_ownership_controls" "ownership_controls" {
+  bucket = aws_s3_bucket.static_website.bucket
+  rule {
+    object_ownership = "BucketOwnerPreferred" # Important: Allows ACLs
+  }
+}
+
 resource "aws_s3_bucket_public_access_block" "static_website_access" {
   bucket = aws_s3_bucket.static_website.bucket
 
-  block_public_acls       = false # Important, but not strictly required for bucket policy
-  block_public_policy     = false # Important, but not strictly required for bucket policy
+  block_public_acls       = false # Required for ACLs
+  block_public_policy     = false
   ignore_public_acls      = false
   restrict_public_buckets = false
 }
 
-resource "aws_s3_bucket_policy" "static_website_policy" {
+resource "aws_s3_bucket_acl" "static_website_acl" {
   bucket = aws_s3_bucket.static_website.bucket
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid    = "PublicReadGetObject"
-        Effect = "Allow"
-        Principal = "*" # Allow everyone to read
-        Action   = [
-          "s3:GetObject"
-        ]
-        Resource = [
-          aws_s3_bucket.static_website.arn,
-          "${aws_s3_bucket.static_website.arn}/*" # Important: Include objects
-        ]
-      }
-    ]
-  })
+  acl    = "public-read" # Often not necessary, object ACLs are what matters
+  depends_on = [
+    aws_s3_bucket_ownership_controls.ownership_controls
+  ]
 }
-
 
 resource "aws_s3_bucket_website_configuration" "static_website" {
   bucket = aws_s3_bucket.static_website.bucket
@@ -64,7 +58,11 @@ resource "aws_s3_object" "website_index" {
   bucket = aws_s3_bucket.static_website.bucket
   key    = "index.html"
   source = var.index_html_path
-  content_type = "text/html" # Important: Set content type
+  acl    = "public-read"
+  content_type = "text/html"
+  depends_on = [
+    aws_s3_bucket_ownership_controls.ownership_controls
+  ]
 }
 
 output "website_url" {
