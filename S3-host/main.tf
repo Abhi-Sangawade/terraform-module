@@ -2,55 +2,59 @@ provider "aws" {
   region = "ap-south-1"  # Change region if needed
 }
 
-# Declare the aws_region variable (if not using default)
-variable "aws_region" {
-  description = "The AWS region where resources will be created."
-  default     = "ap-south-1"  # You can modify this region if needed
-}
+# ... (variable definitions and provider block)
 
-# Create an S3 bucket
 resource "aws_s3_bucket" "static_website" {
-  bucket = "trfm-bucket-15243"  # Use a unique bucket name
+  bucket = "trfm-bucket-15243" # Use a unique bucket name
 }
 
-# Set the Bucket's ACL to allow public-read access
-resource "aws_s3_bucket_acl" "static_website_acl" {
-  bucket = aws_s3_bucket.static_website.bucket
-  acl    = "public-read"  # Ensure the bucket is publicly readable
-}
-
-# Disable block public access for the S3 bucket (enabling public access for the website)
 resource "aws_s3_bucket_public_access_block" "static_website_access" {
   bucket = aws_s3_bucket.static_website.bucket
-
-  block_public_acls   = false
-  block_public_policy = false
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
 }
 
-# Configure the S3 bucket as a static website
+resource "aws_s3_bucket_policy" "static_website_policy" {
+  bucket = aws_s3_bucket.static_website.bucket
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "PublicReadGetObject"
+        Effect = "Allow"
+        Principal = "*"
+        Action   = [
+          "s3:GetObject"
+        ]
+        Resource = [
+          aws_s3_bucket.static_website.arn,
+          "${aws_s3_bucket.static_website.arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
+
 resource "aws_s3_bucket_website_configuration" "static_website" {
   bucket = aws_s3_bucket.static_website.bucket
-
   index_document {
     suffix = "index.html"
   }
-
-  # Optional: Define error document (e.g., 404.html)
   error_document {
-    key = "error.html"
+    key = "error.html" # Optional
   }
 }
 
-# Upload the website files (index.html in this case) with public-read ACL
 resource "aws_s3_object" "website_index" {
   bucket = aws_s3_bucket.static_website.bucket
   key    = "index.html"
-  source = "index.html"  # Replace with your local file path
-  acl    = "public-read"  # Ensure the file is publicly accessible
+  source = "index.html"
+  acl    = "public-read" # Optional, but good practice
 }
 
-
-# Output the URL of the static website
 output "website_url" {
   value = "http://${aws_s3_bucket.static_website.bucket}.s3-website-${var.aws_region}.amazonaws.com"
 }
