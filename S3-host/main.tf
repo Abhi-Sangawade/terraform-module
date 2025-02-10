@@ -25,7 +25,7 @@ resource "aws_s3_object" "website_index" {
   bucket = aws_s3_bucket.static_website.bucket
   key    = "index.html"
   source = "index.html"  
-  acl    = "public-read" 
+  #acl    = "public-read" 
 }
 
 output "website_url" {
