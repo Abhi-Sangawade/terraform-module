@@ -70,7 +70,6 @@ resource "aws_s3_object" "website_index" {
   ]
 }
 
-
 resource "aws_s3_object" "website_assets" {
   for_each = fileset(var.assets_path, "**/*") # Use fileset to get all files
 
@@ -79,25 +78,18 @@ resource "aws_s3_object" "website_assets" {
   source = "${var.assets_path}/${each.key}" # Full path to the file
   acl    = "public-read"
 
-  dynamic "content_type" {
-    for_each = { for path, type in {
-      for file in fileset(var.assets_path, "**/*") :
-      file => lookup({
-        "css" : "text/css",
-        "js" : "application/javascript",
-        "html" : "text/html",
-        "png" : "image/png",
-        "jpg" : "image/jpeg",
-        "jpeg" : "image/jpeg",
-        "gif" : "image/gif",
-        "svg" : "image/svg+xml",
-        "ico" : "image/x-icon"
-      }, regex("\\.([a-z]+)$", file)[0], "application/octet-stream")
-    } : path => type }
-    content {
-      type = content.value
-    }
-  }
+  content_type = lookup({
+    "css" : "text/css",
+    "js" : "application/javascript",
+    "html" : "text/html",
+    "png" : "image/png",
+    "jpg" : "image/jpeg",
+    "jpeg" : "image/jpeg",
+    "gif" : "image/gif",
+    "svg" : "image/svg+xml",
+    "ico" : "image/x-icon"
+  }, regex("\\.([a-z]+)$", each.key)[0], "application/octet-stream")
+
   depends_on = [
     aws_s3_bucket_ownership_controls.ownership_controls
   ]
