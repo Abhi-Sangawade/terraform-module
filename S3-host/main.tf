@@ -13,7 +13,7 @@ variable "index_html_path" {
 }
 
 resource "aws_s3_bucket" "static_website" {
-  bucket = "your-unique-bucket-name" # Replace with a unique name
+  bucket = "bucket-trfm" # Replace with a unique name
 }
 
 resource "aws_s3_bucket_public_access_block" "static_website_access" {
