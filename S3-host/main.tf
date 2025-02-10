@@ -10,7 +10,8 @@ variable "aws_region" {
 
 # Create an S3 bucket
 resource "aws_s3_bucket" "static_website" {
-  bucket = "trfm-bucket-15243"  # Replace with a unique name
+  bucket = "trfm-bucket-15243"  
+  acl    = "public-read"
 }
 
 # Disable block public access for the S3 bucket
@@ -39,8 +40,8 @@ resource "aws_s3_bucket_website_configuration" "static_website" {
 resource "aws_s3_object" "website_index" {
   bucket = aws_s3_bucket.static_website.bucket
   key    = "index.html"
-  source = "index.html"  # Replace with the path to your local file
-  acl    = "public-read"  # Allow public access to the file
+  source = "index.html"  
+  acl    = "public-read"  
 }
 
 # Output the URL of the static website
