@@ -3,11 +3,19 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "static_website" {
-  bucket = "teraffrom-bucket"
-  website {
-    index_document = "index.html"
+  bucket = "your-unique-bucket-name"
+}
 
+resource "aws_s3_bucket_website_configuration" "static_website_config" {
+  bucket = aws_s3_bucket.static_website.bucket
+
+  index_document {
+    suffix = "index.html"
   }
+
+  # optional: error_document {
+  #   key = "error.html"
+  # }
 }
 
 resource "null_resource" "download_and_unzip" {
@@ -33,5 +41,5 @@ resource "aws_s3_object" "static_files" {
 }
 
 output "website_url" {
-  value = aws_s3_bucket.static_website.website_url
+  value = "http://${aws_s3_bucket.static_website.bucket}.s3-website-${var.aws_region}.amazonaws.com"
 }
