@@ -14,7 +14,7 @@ variable "index_html_path" {
 }
 
 resource "aws_s3_bucket" "static_website" {
-  bucket = "bucket-trfm-1" # Or a unique name
+  bucket = "bucket-trfm-2" 
 }
 
 # Object Ownership: CRITICAL for ACLs to work when other accounts own objects
