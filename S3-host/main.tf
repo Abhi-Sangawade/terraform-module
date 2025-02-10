@@ -39,7 +39,7 @@ resource "aws_s3_object" "static_files" {
   source = "/tmp/listrace/${each.value}"
   acl    = "public-read"
 }
-
 output "website_url" {
-  value = "http://${aws_s3_bucket.static_website.bucket}.s3-website-${var.aws_region}.amazonaws.com"
+  value = "http://${aws_s3_bucket.static_website.bucket}.s3-website-us-east-1.amazonaws.com"  # Replace with your desired region
 }
+
