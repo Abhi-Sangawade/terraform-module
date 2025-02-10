@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-1"
+  region = "ap-south-1"
 }
 
 resource "aws_s3_bucket" "static_website" {
@@ -17,7 +17,7 @@ resource "aws_s3_bucket_website_configuration" "static_website_config" {
 resource "null_resource" "download_and_unzip" {
   provisioner "local-exec" {
     command = <<EOT
-      wget https://www.free-css.com/assets/files/free-css-templates/download/page296/listrace.zip -O /tmp/listrace.zip
+      curl -O https://www.free-css.com/assets/files/free-css-templates/download/page296/listrace.zip -O /tmp/listrace.zip
       unzip /tmp/listrace.zip -d /tmp/listrace/
     EOT
   }
