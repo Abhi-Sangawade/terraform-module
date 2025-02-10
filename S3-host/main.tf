@@ -10,7 +10,7 @@ variable "aws_region" {
 
 # Create an S3 bucket
 resource "aws_s3_bucket" "static_website" {
-  bucket = "trfm-bucket"  # Replace with a unique name
+  bucket = "trfm-bucket-15243"  # Replace with a unique name
 }
 
 # Configure the S3 bucket as a static website
